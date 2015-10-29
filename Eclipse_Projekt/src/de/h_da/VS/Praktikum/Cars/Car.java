@@ -10,6 +10,7 @@ import org.newdawn.slick.geom.Vector2f;
 import com.sun.swing.internal.plaf.synth.resources.synth;
 
 import de.h_da.VS.Praktikum.TrafficSimulator;
+import de.h_da.VS.Praktikum.Exceptions.EndOfRoadException;
 import de.h_da.VS.Praktikum.Graph.Edge;
 import de.h_da.VS.Praktikum.Graph.Node;
 
@@ -198,11 +199,14 @@ public class Car {
 		this.currentEdge = edge;
 	}
 
-	private Vector2f getCurrentPosition() throws Exception {
+	private Vector2f getCurrentPosition() throws EndOfRoadException{
 		if (this.arrivedAtEndOfEdge(lastKnownPosition)) {
+			if (this.currentEdge.getDestinationNode().equals(this.destination)) {
+				throw new EndOfRoadException();
+			}
 			Edge nextDestination = this.findNextDestination();
-			if (nextDestination == null) {
-				throw new Exception("");
+			if (nextDestination == null ) {
+				throw new EndOfRoadException();
 			}
 			this.setNextDestination(nextDestination);
 		}
@@ -219,7 +223,7 @@ public class Car {
 		return this.lastKnownPosition;
 	}
 
-	public void tick(TrafficSimulator navi) throws Exception {
+	public void tick(TrafficSimulator navi) throws EndOfRoadException {
 		this.lastKnownPosition = this.getCurrentPosition();
 
 	}

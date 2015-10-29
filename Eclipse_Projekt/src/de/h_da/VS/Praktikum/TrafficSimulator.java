@@ -12,6 +12,7 @@ import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 
 import de.h_da.VS.Praktikum.Cars.Car;
+import de.h_da.VS.Praktikum.Exceptions.EndOfRoadException;
 import de.h_da.VS.Praktikum.Graph.Edge;
 import de.h_da.VS.Praktikum.Graph.Node;
 
@@ -85,11 +86,12 @@ public class TrafficSimulator {
 	 * spawns a new car
 	 */
 	public void spawnNewCar() {
+		Node start = this.getNode('A');
+		Node end = this.getNode('C');
 		float speed = getRandomFloat(minSpeed, maxSpeed) * speedMultiplier;
-		Node n = this.nodesList.get(0);
-		Edge e = n.getRandomEdge();
-		Car c = new Car(e, n.getPosition(), this.nodesList.get(this.nodesList.size() - 1), speed);
-		n.addCarToSpawnList(c);
+		Edge e = start.getRandomEdge();
+		Car c = new Car(e, start.getPosition(), end, speed);
+		start.addCarToSpawnList(c);
 	}
 
 	/**
@@ -101,7 +103,8 @@ public class TrafficSimulator {
 			Car auto = this.carList.get(i);
 			try {
 				auto.tick(this);
-			} catch (Exception e) {
+			} catch (EndOfRoadException e) {
+				auto.delete();
 				this.carList.remove(i);
 				this.spawnNewCar();
 			}
@@ -150,7 +153,7 @@ public class TrafficSimulator {
 	}
 
 	/**
-	 * draws all shades and form to screen
+	 * draws all shades and forms to screen
 	 * 
 	 * @param gc
 	 * @param g
@@ -228,15 +231,7 @@ public class TrafficSimulator {
 		return rand.nextInt((max - min) + 1) + min;
 	}
 
-	/**
-	 * Class, that is thrown then a car reaces its destination
-	 * 
-	 * @author Laptop-Jonas
-	 *
-	 */
-	class EndOfRoadException extends Exception {
-		private static final long serialVersionUID = 1L;
-	}
+	
 
 	/**
 	 * Checks for any colliding cars. Collision == TrafficJam
