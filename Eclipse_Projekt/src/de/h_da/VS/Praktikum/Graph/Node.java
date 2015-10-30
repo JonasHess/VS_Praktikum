@@ -41,6 +41,26 @@ public class Node {
 	public List<Edge> getEdges() {
 		return this.edges;
 	}
+	public Edge getEdges(Node dest) {
+		List<Edge> edges = getEdges();
+		for (Edge e: edges) {
+			if (e.getDestinationNode().id == this.id) {
+				return e;
+			}
+		}
+		
+		return null;
+	}
+	
+	public List<Node> getNeighboursNodes() {
+		List<Node> result = new ArrayList<Node>(this.edges.size());
+		
+		for (int i = 0; i < this.edges.size(); i++) {
+			result.add(this.edges.get(i).getDestinationNode());
+		}
+		return result;
+	}
+	
 	
 	/**
 	 * Return the id of this node
