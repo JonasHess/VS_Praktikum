@@ -12,12 +12,14 @@ import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 
 import de.h_da.VS.Praktikum.Cars.Car;
+import de.h_da.VS.Praktikum.Cars.SmartCar;
 import de.h_da.VS.Praktikum.Exceptions.EndOfRoadException;
 import de.h_da.VS.Praktikum.Graph.Edge;
 import de.h_da.VS.Praktikum.Graph.Node;
 
 public class TrafficSimulator {
 	List<Car> carList;
+	SmartCar car = null; 
 
 	final int carCount = 30;
 	final float maxSpeed = 10;
@@ -90,7 +92,19 @@ public class TrafficSimulator {
 		Node end = this.getNode('C');
 		float speed = getRandomFloat(minSpeed, maxSpeed) * speedMultiplier;
 		Edge e = start.getRandomEdge();
-		Car c = new Car(e, start.getPosition(), end, speed, this.nodesList);
+		Car c = new Car(e, start.getPosition(), end, speed);
+		start.addCarToSpawnList(c);
+	}
+	
+	/**
+	 * spawns a new smartCar
+	 */
+	public void spawnNewSmartCar() {
+		Node start = this.getNode('A');
+		Node end = this.getNode('C');
+		float speed = getRandomFloat(minSpeed, maxSpeed) * speedMultiplier;
+		Edge e = start.getRandomEdge();
+		Car c = new SmartCar(e, start.getPosition(), end, speed, nodesList);
 		start.addCarToSpawnList(c);
 	}
 
@@ -99,6 +113,19 @@ public class TrafficSimulator {
 	 */
 	public void tick() {
 		colisionDetection();
+		
+		if (car == null) {
+			this.spawnNewSmartCar();
+		} else {
+			try {
+				car.tick(this);
+			} catch (EndOfRoadException e) {
+				car.delete();
+				car = null;
+			}
+		}
+		
+		
 		for (int i = this.carList.size() - 1; i >= 0; i--) {
 			Car auto = this.carList.get(i);
 			try {
@@ -169,6 +196,8 @@ public class TrafficSimulator {
 
 		for (Car auto : this.carList) {
 			Shape s = auto.getShape();
+			s.setCenterX(s.getCenterX() - 20.0f);
+			s.setCenterY(s.getCenterY() - 10.0f);
 			if (auto.isInTrafficJam()) {
 				g.setColor(Color.red);
 			} else {
