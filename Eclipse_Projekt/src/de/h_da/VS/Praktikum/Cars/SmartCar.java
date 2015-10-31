@@ -24,12 +24,10 @@ public class SmartCar extends Car {
 	 * @param destination
 	 * @param maxSpeed
 	 */
-	public SmartCar(Edge currentEdge, Vector2f spawnPoint, Node destination, float maxSpeed, List<Node> nodesList) {
-		super(currentEdge, spawnPoint, destination, maxSpeed, nodesList);
-
+	public SmartCar(Node startNode, Node destination, float maxSpeed, List<Node> nodesList) {
+		super(startNode, destination, maxSpeed, nodesList);
 		this.transmitter = new TCP_Transmitter(this);
 		//transmitter.start();
-
 	}
 
 	/**
@@ -119,17 +117,16 @@ public class SmartCar extends Car {
 	 * @return
 	 */
 	@Override
-	protected Edge findNextDestination() {
-		Node myNode = getCurrentEdge().getDestinationNode();
+	protected Edge findNextDestination(Node currentNode, Node destinationNode) {
 
-		if (myNode.getNeighboursNodes().size() == 1) {
-			return myNode.getEdges().get(0);
+		if (currentNode.getNeighboursNodes().size() == 1) {
+			return currentNode.getEdges().get(0);
 		}
 		
 		
-		Map<Node, List<Node>> result = dijkstra(graph, myNode);
+		Map<Node, List<Node>> result = dijkstra(graph, currentNode);
 		
-		return myNode.getEdgeConnectedToNode(nextNode(result, myNode, destination));
+		return currentNode.getEdgeConnectedToNode(nextNode(result, currentNode, destinationNode));
 	}
 
 }

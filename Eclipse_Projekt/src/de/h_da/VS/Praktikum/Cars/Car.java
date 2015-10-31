@@ -31,6 +31,7 @@ public class Car {
 	private List<Boolean> trafficJamHistoryList;
 	private float lastDistance = Float.MAX_VALUE;
 	protected List<Node> graph;
+	private Node startNode;
 	final private float trafficJamSpeed = 0.0f;
 
 
@@ -42,26 +43,23 @@ public class Car {
 	 * @param destination
 	 * @param maxSpeed
 	 */
-	public Car(Edge currentEdge, Vector2f spawnPoint, Node destination, float maxSpeed, List<Node> graph) {
+	public Car(Node startNode, Node destination, float maxSpeed, List<Node> graph) {
 		
 		this.id = Car.nextId++;
 		this.graph = graph;
-		this.currentEdge = currentEdge;
-		this.lastKnownPosition = spawnPoint;
+		this.currentEdge = null;
+		this.lastKnownPosition = startNode.getPosition();
 		this.destination = destination;
-
 		this.maxSpeed = maxSpeed;
-		this.trafficJamHistoryList = new LinkedList<Boolean>();
-		for (int i = 0; i < 70; i++) {
-			trafficJamHistoryList.add(false);
-		}
-
-		this.averageSpeedList = new LinkedList<Float>();
-		for (int i = 0; i < 70; i++) {
-			averageSpeedList.add(0f);
-		}
-
+		this.startNode = startNode;
 		
+		this.trafficJamHistoryList = new LinkedList<Boolean>();
+		this.averageSpeedList = new LinkedList<Float>();
+		
+	}
+	
+	public void startCar() {
+		this.currentEdge = this.findNextDestination(startNode, destination);
 	}
 	
 	synchronized public int getId() {
@@ -138,7 +136,9 @@ public class Car {
 	 * @param currentSpeed
 	 */
 	private void addNewAverageSpeed(float currentSpeed) {
-		this.averageSpeedList.remove(0);
+		if (averageSpeedList.size() >= 70) {
+			this.averageSpeedList.remove(0);
+		}
 		this.averageSpeedList.add(currentSpeed);
 	}
 
@@ -148,7 +148,9 @@ public class Car {
 	 */
 	public void setIsInTrafficJam(boolean trafficJam) {
 		this.isInTrafficJam = trafficJam;
-		this.trafficJamHistoryList.remove(0);
+		if (trafficJamHistoryList.size() >= 70) {
+			this.trafficJamHistoryList.remove(0);
+		}
 		this.trafficJamHistoryList.add(trafficJam);
 	}
 
@@ -190,7 +192,7 @@ public class Car {
 	 * Calculates the direction of the next turn. 
 	 * @return
 	 */
-	protected Edge findNextDestination() {
+	protected Edge findNextDestination(Node currentNode, Node destinationNode) {
 		return currentEdge.getDestinationNode().getRandomEdge();
 	}
 
@@ -206,7 +208,7 @@ public class Car {
 			if (this.currentEdge.getDestinationNode().equals(this.destination)) {
 				throw new EndOfRoadException();
 			}
-			Edge nextDestination = this.findNextDestination();
+			Edge nextDestination = this.findNextDestination(currentEdge.getDestinationNode(), destination);
 			if (nextDestination == null ) {
 				throw new EndOfRoadException();
 			}
@@ -226,6 +228,9 @@ public class Car {
 	}
 
 	public void tick(TrafficSimulator navi) throws EndOfRoadException {
+		if (this.currentEdge == null) {
+			return;
+		}
 		this.lastKnownPosition = this.getCurrentPosition();
 
 	}
