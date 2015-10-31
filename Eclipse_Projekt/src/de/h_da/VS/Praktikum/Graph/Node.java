@@ -43,8 +43,9 @@ public class Node {
 	}
 	public Edge getEdges(Node dest) {
 		List<Edge> edges = getEdges();
+		
 		for (Edge e: edges) {
-			if (e.getDestinationNode().id == this.id) {
+			if (e.getDestinationNode().getId() == dest.getId()) {
 				return e;
 			}
 		}
@@ -135,3 +136,4 @@ public class Node {
 	
 	
 }
+
