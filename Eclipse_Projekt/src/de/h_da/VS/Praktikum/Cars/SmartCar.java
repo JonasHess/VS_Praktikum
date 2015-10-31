@@ -87,6 +87,31 @@ public class SmartCar extends Car {
 
 		return pred;
 	}
+	
+	public Node findSameNeighbor(Node A, Node B) {
+		List<Node> first = A.getNeighboursNodes();
+		
+		for (Node n : first) {
+			for (Node p : n.getNeighboursNodes()) {
+				if (p.getId() == B.getId()) {
+					return n;
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	public Node nextNode(Map<Node, List<Node>> pred, Node myNode, Node goal) {
+		final List<Node> path = new ArrayList<>();
+		Node x = goal;
+		while(x.getId() != myNode.getId()) {
+			path.add(x);
+			x = pred.get(x).get(pred.get(x).size() - 1);
+		}
+		
+		return path.get(path.size() - 1);
+	}
 
 	/**
 	 * Calculates the direction of the next turn.
@@ -103,22 +128,8 @@ public class SmartCar extends Car {
 		
 		
 		Map<Node, List<Node>> result = dijkstra(graph, myNode);
-		List<Node> shortestPath = result.get(destination);
 		
-	
-		System.out.println("new Point reached: ");
-		System.out.println(myNode.getId());
-
-		for (Node n : shortestPath) {
-			System.out.print(n.getId() + " -> ");
-		}
-		Node nextNode = shortestPath.get(0);
-		
-		if (nextNode.getId() == myNode.getId()) {
-			return myNode.getEdgeConnectedToNode(destination);
-		}
-		
-		return myNode.getEdgeConnectedToNode(nextNode);
+		return myNode.getEdgeConnectedToNode(nextNode(result, myNode, destination));
 	}
 
 }
