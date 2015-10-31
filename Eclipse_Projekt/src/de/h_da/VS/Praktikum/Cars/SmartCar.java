@@ -107,7 +107,7 @@ public class SmartCar extends Car {
 		System.out.println(nextNode.getId());
 		
 		if (! myNode.isConnectedToNode(nextNode)) {
-			throw new RuntimeException("\n\n******************************************* \n*  The node \"" + myNode.getId() + "\" is not a connected to \"" + nextNode.getId() + "\" \n******************************************* \n");
+			throw new RuntimeException("\n\n******************************************* \n*  The node \"" + myNode.getId() + "\" is not connected to \"" + nextNode.getId() + "\" \n******************************************* \n");
 		}
 
 		return myNode.getEdgeConnectedToNode(nextNode);
