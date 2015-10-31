@@ -90,7 +90,7 @@ public class TrafficSimulator {
 		Node end = this.getNode('C');
 		float speed = getRandomFloat(minSpeed, maxSpeed) * speedMultiplier;
 		Edge e = start.getRandomEdge();
-		Car c = new Car(e, start.getPosition(), end, speed);
+		Car c = new Car(e, start.getPosition(), end, speed, this.nodesList);
 		start.addCarToSpawnList(c);
 	}
 

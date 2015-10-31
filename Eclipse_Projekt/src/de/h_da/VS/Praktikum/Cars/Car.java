@@ -30,6 +30,7 @@ public class Car {
 	private List<Float> averageSpeedList;
 	private List<Boolean> trafficJamHistoryList;
 	private float lastDistance = Float.MAX_VALUE;
+	private List<Node> graph;
 	final private float trafficJamSpeed = 0.0f;
 
 
@@ -41,9 +42,10 @@ public class Car {
 	 * @param destination
 	 * @param maxSpeed
 	 */
-	public Car(Edge currentEdge, Vector2f spawnPoint, Node destination, float maxSpeed) {
+	public Car(Edge currentEdge, Vector2f spawnPoint, Node destination, float maxSpeed, List<Node> graph) {
 		
 		this.id = Car.nextId++;
+		this.graph = graph;
 		this.currentEdge = currentEdge;
 		this.lastKnownPosition = spawnPoint;
 		this.destination = destination;
