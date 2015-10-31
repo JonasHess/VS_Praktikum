@@ -72,11 +72,9 @@ public class SmartCar extends Car {
 
 		for (int i = 0; i < graph.size(); i++) {
 			final Node next = minVertex(dist, visited);
-
 			visited.put(next, true);
-			if (next == null) {
-				continue;
-			}
+			
+			
 			final List<Node> neighbors = next.getNeighboursNodes();
 			for (Node v : neighbors) {
 				final float d = dist.get(next) + next.getEdgeConnectedToNode(v).getCost();
@@ -99,17 +97,19 @@ public class SmartCar extends Car {
 	protected Edge findNextDestination() {
 		Node myNode = getCurrentEdge().getDestinationNode();
 
+		if (myNode.getNeighboursNodes().size() == 1) {
+			return myNode.getEdges().get(0);
+		}
+				
 		Map<Node, List<Node>> result = dijkstra(graph, myNode);
 		List<Node> shortestPath = result.get(destination);
-		
+
 		Node nextNode = shortestPath.get(0);
 
-		System.out.println(nextNode.getId());
-		
-		if (! myNode.isConnectedToNode(nextNode)) {
-			throw new RuntimeException("\n\n******************************************* \n*  The node \"" + myNode.getId() + "\" is not connected to \"" + nextNode.getId() + "\" \n******************************************* \n");
+		if (shortestPath.size() == 1 || nextNode.getId() == myNode.getId()) {
+			return myNode.getEdgeConnectedToNode(destination);
 		}
-
+		
 		return myNode.getEdgeConnectedToNode(nextNode);
 	}
 
