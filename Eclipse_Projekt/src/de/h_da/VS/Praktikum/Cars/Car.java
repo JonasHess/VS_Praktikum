@@ -30,7 +30,7 @@ public class Car {
 	private List<Float> averageSpeedList;
 	private List<Boolean> trafficJamHistoryList;
 	private float lastDistance = Float.MAX_VALUE;
-	private List<Node> graph;
+	protected List<Node> graph;
 	final private float trafficJamSpeed = 0.0f;
 
 

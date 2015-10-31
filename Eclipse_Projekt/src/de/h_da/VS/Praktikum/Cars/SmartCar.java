@@ -4,16 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-
 import org.newdawn.slick.geom.Vector2f;
 
 import de.h_da.VS.Praktikum.Graph.Edge;
 import de.h_da.VS.Praktikum.Graph.Node;
 import de.h_da.VS.Praktikum.Transmitter.TCP_Transmitter;
 import de.h_da.VS.Praktikum.Transmitter.Transmitter;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-import sun.security.provider.certpath.Vertex;
 
 public class SmartCar extends Car {
 
@@ -29,12 +25,10 @@ public class SmartCar extends Car {
 	 * @param maxSpeed
 	 */
 	public SmartCar(Edge currentEdge, Vector2f spawnPoint, Node destination, float maxSpeed, List<Node> nodesList) {
-		super(currentEdge, spawnPoint, destination, maxSpeed);
-
-		this.nodesList = nodesList;
+		super(currentEdge, spawnPoint, destination, maxSpeed, nodesList);
 
 		this.transmitter = new TCP_Transmitter(this);
-		transmitter.start();
+		//transmitter.start();
 
 	}
 
@@ -78,14 +72,14 @@ public class SmartCar extends Car {
 
 		for (int i = 0; i < graph.size(); i++) {
 			final Node next = minVertex(dist, visited);
-			
+
 			visited.put(next, true);
 			if (next == null) {
 				continue;
 			}
 			final List<Node> neighbors = next.getNeighboursNodes();
 			for (Node v : neighbors) {
-				final float d = dist.get(next) + next.getEdges(v).getCost();
+				final float d = dist.get(next) + next.getEdgeConnectedToNode(v).getCost();
 				if (dist.get(v) > d) {
 					dist.put(v, d);
 					pred.get(v).add(next);
@@ -104,16 +98,19 @@ public class SmartCar extends Car {
 	@Override
 	protected Edge findNextDestination() {
 		Node myNode = getCurrentEdge().getDestinationNode();
+
+		Map<Node, List<Node>> result = dijkstra(graph, myNode);
+		List<Node> shortestPath = result.get(destination);
 		
-		Map<Node, List<Node>> result = dijkstra(nodesList, myNode);
-		Node nextNode = result.get(destination).get(0);
-		
-		
+		Node nextNode = shortestPath.get(0);
+
 		System.out.println(nextNode.getId());
 		
-		
-		
-		return myNode.getEdges(nextNode);
+		if (! myNode.isConnectedToNode(nextNode)) {
+			throw new RuntimeException("\n\n******************************************* \n*  The node \"" + myNode.getId() + "\" is not a connected to \"" + nextNode.getId() + "\" \n******************************************* \n");
+		}
+
+		return myNode.getEdgeConnectedToNode(nextNode);
 	}
 
 }

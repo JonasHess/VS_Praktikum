@@ -19,12 +19,10 @@ import de.h_da.VS.Praktikum.Graph.Node;
 
 public class TrafficSimulator {
 	List<Car> carList;
-	SmartCar car = null; 
-
-	final int carCount = 30;
+	final int carCount = 1;
 	final float maxSpeed = 10;
 	final float minSpeed = 3;
-	final float speedMultiplier = 0.1f;
+	final float speedMultiplier = 0.07f;
 
 	private List<Node> nodesList;
 
@@ -92,19 +90,7 @@ public class TrafficSimulator {
 		Node end = this.getNode('C');
 		float speed = getRandomFloat(minSpeed, maxSpeed) * speedMultiplier;
 		Edge e = start.getRandomEdge();
-		Car c = new Car(e, start.getPosition(), end, speed);
-		start.addCarToSpawnList(c);
-	}
-	
-	/**
-	 * spawns a new smartCar
-	 */
-	public void spawnNewSmartCar() {
-		Node start = this.getNode('A');
-		Node end = this.getNode('C');
-		float speed = getRandomFloat(minSpeed, maxSpeed) * speedMultiplier;
-		Edge e = start.getRandomEdge();
-		Car c = new SmartCar(e, start.getPosition(), end, speed, nodesList);
+		Car c = new SmartCar(e, start.getPosition(), end, speed, this.nodesList);
 		start.addCarToSpawnList(c);
 	}
 
@@ -113,19 +99,7 @@ public class TrafficSimulator {
 	 */
 	public void tick() {
 		colisionDetection();
-		
-		if (car == null) {
-			this.spawnNewSmartCar();
-		} else {
-			try {
-				car.tick(this);
-			} catch (EndOfRoadException e) {
-				car.delete();
-				car = null;
-			}
-		}
-		
-		
+	
 		for (int i = this.carList.size() - 1; i >= 0; i--) {
 			Car auto = this.carList.get(i);
 			try {

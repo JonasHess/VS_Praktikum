@@ -3,6 +3,8 @@ package de.h_da.VS.Praktikum.Graph;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.management.RuntimeErrorException;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Circle;
@@ -41,16 +43,20 @@ public class Node {
 	public List<Edge> getEdges() {
 		return this.edges;
 	}
-	public Edge getEdges(Node dest) {
-		List<Edge> edges = getEdges();
+	
+	public boolean isConnectedToNode(Node n) {
+		return getNeighboursNodes().contains(n);
+	}
+	public Edge getEdgeConnectedToNode(Node dest) {
+		List<Edge> edges = this.getEdges();
 		
 		for (Edge e: edges) {
 			if (e.getDestinationNode().getId() == dest.getId()) {
 				return e;
 			}
 		}
-		
 		return null;
+		
 	}
 	
 	public List<Node> getNeighboursNodes() {
