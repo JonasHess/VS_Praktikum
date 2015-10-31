@@ -100,13 +100,21 @@ public class SmartCar extends Car {
 		if (myNode.getNeighboursNodes().size() == 1) {
 			return myNode.getEdges().get(0);
 		}
-				
+		
+		
 		Map<Node, List<Node>> result = dijkstra(graph, myNode);
 		List<Node> shortestPath = result.get(destination);
+		
+	
+		System.out.println("new Point reached: ");
+		System.out.println(myNode.getId());
 
+		for (Node n : shortestPath) {
+			System.out.print(n.getId() + " -> ");
+		}
 		Node nextNode = shortestPath.get(0);
-
-		if (shortestPath.size() == 1 || nextNode.getId() == myNode.getId()) {
+		
+		if (nextNode.getId() == myNode.getId()) {
 			return myNode.getEdgeConnectedToNode(destination);
 		}
 		
