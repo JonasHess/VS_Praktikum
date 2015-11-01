@@ -3,6 +3,7 @@ package de.h_da.VS.Praktikum.Transmitter;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
+import java.io.IOException;
 import java.net.Socket;
 
 import com.sun.swing.internal.plaf.synth.resources.synth;
@@ -10,8 +11,17 @@ import com.sun.swing.internal.plaf.synth.resources.synth;
 import de.h_da.VS.Praktikum.Cars.Car;
 
 public abstract class Transmitter extends Thread {
-
+	private static final String hosts = "localhost"; //Hieraus kann man eine Liste mit allen hosts machen
+	private static final int port = 9999;
+	
 	private Car car;
+	private String currentEdge = "";
+	
+        private Socket socket;
+        //protected BufferedReader fromServer;   
+        protected DataOutputStream toServer;
+	private boolean connected = false;
+	
 	private boolean stop = false;
 
 	/**
@@ -34,8 +44,11 @@ public abstract class Transmitter extends Thread {
 			if (stop) {
 				return;
 			}
+			if(currentEdge != car.getCurrentEdge().getId()) {
+				connected = disconnectFromServer();
+				connected = connectToServer(hosts); //hier muss später der entsprechende Server übergeben werden
+			}
 			try {
-
 				this.sendData(getCarString());
 				Thread.sleep(500);
 
@@ -44,11 +57,42 @@ public abstract class Transmitter extends Thread {
 			}
 		}
 	}
-
+	
+	/**
+	 * Connect to host
+	 */
+        private boolean connectToServer(String host) {
+            	try {
+                	socket = new Socket(host, port);
+                	toServer = new DataOutputStream(socket.getOutputStream());
+        	 	currentEdge = car.getCurrentEdge().getId();
+                	return true;
+            	}
+            	catch(Exception e) {
+                	e.printStackTrace();
+                	return false;
+            	}            
+        }
+        
+	/**
+	 * Disconnect from host
+	 */	
+	private boolean disconnectFromServer() {
+        	try {
+                	socket.close();
+                	toServer.close();
+                	return true;
+            	}
+    		catch(IOException e) {
+                	return false;
+            	}
+        }
+	
 	/**
 	 * Is called to stop this thread
 	 */
 	synchronized public void stopTransmitter() {
+		disconnectFromServer();
 		this.stop = true;
 	}
 
