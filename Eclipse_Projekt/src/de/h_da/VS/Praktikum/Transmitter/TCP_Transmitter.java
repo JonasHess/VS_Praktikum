@@ -19,7 +19,7 @@ public class TCP_Transmitter extends Transmitter{
 	 */
 	@Override
 	protected void sendData(String payLoad) throws Exception {
-		//TODO sent payload
+		toServer.writeBytes(payLoad);
 	}
 
 }
