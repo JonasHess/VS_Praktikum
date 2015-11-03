@@ -32,6 +32,7 @@ public abstract class Transmitter extends Thread {
 	public Transmitter(Car car) {
 		super();
 		this.car = car;
+		connectToServer(hosts);
 	}
 
 	/**
@@ -46,7 +47,7 @@ public abstract class Transmitter extends Thread {
 			}
 			if(currentEdge != car.getCurrentEdge().getId()) {
 				connected = disconnectFromServer();
-				connected = connectToServer(hosts); //hier muss später der entsprechende Server übergeben werden
+				connected = connectToServer(hosts); //hier muss spÃ¤ter der entsprechende Server Ã¼bergeben werden
 			}
 			try {
 				this.sendData(getCarString());
@@ -65,7 +66,7 @@ public abstract class Transmitter extends Thread {
             	try {
                 	socket = new Socket(host, port);
                 	toServer = new DataOutputStream(socket.getOutputStream());
-        	 	currentEdge = car.getCurrentEdge().getId();
+                	currentEdge = car.getCurrentEdge().getId();
                 	return true;
             	}
             	catch(Exception e) {
