@@ -86,7 +86,7 @@ public class Edge {
 	 */
 	synchronized public  String getId() {
 		
-		return "" + this.sourceNode.getId() + ";" + this.destinationNode.getId();
+		return "" + this.sourceNode.getId() + ":" + this.destinationNode.getId();
 	}
 
 }
