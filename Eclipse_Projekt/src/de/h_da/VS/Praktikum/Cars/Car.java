@@ -31,7 +31,7 @@ public class Car {
 	private List<Boolean> trafficJamHistoryList;
 	private float lastDistance = Float.MAX_VALUE;
 	protected List<Node> graph;
-	private Node startNode;
+	protected Node startNode;
 	final private float trafficJamSpeed = 0.0f;
 
 
