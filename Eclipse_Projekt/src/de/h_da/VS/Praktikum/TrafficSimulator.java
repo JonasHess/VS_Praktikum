@@ -19,10 +19,10 @@ import de.h_da.VS.Praktikum.Graph.Node;
 
 public class TrafficSimulator {
 	List<Car> carList;
-	final int carCount = 100;
+	final int carCount = 2;
 	final float maxSpeed = 10;
 	final float minSpeed = 2f;
-	final float speedMultiplier = 0.2f;
+	final float speedMultiplier = 0.04f;
 
 	private List<Node> nodesList;
 

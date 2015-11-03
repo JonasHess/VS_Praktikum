@@ -1,26 +1,19 @@
 package de.h_da.VS.Praktikum.Transmitter;
 
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.InputStreamReader;
 import java.io.IOException;
 import java.net.Socket;
 
-import com.sun.swing.internal.plaf.synth.resources.synth;
-
 import de.h_da.VS.Praktikum.Cars.Car;
 
+
 public abstract class Transmitter extends Thread {
-	private static final String hosts = "localhost"; //Hieraus kann man eine Liste mit allen hosts machen
-	private static final int port = 9999;
 	
-	private Car car;
-	private String currentEdge = "";
+	protected Car car;
+	private String host;
+	private int port;
 	
-        private Socket socket;
-        //protected BufferedReader fromServer;   
-        protected DataOutputStream toServer;
-	private boolean connected = false;
+	
 	
 	private boolean stop = false;
 
@@ -29,11 +22,16 @@ public abstract class Transmitter extends Thread {
 	 * 
 	 * @param car
 	 */
-	public Transmitter(Car car) {
+	public Transmitter(Car car, String host, int port) {
 		super();
 		this.car = car;
-		connectToServer(hosts);
+		this.host = host;
+		this.port = port;
+		this.stop = false;
 	}
+	
+	
+
 
 	/**
 	 * main method of this thread
@@ -42,16 +40,31 @@ public abstract class Transmitter extends Thread {
 	public void run() {
 		super.run();
 		while (true) {
-			if (stop) {
-				return;
-			}
-			if(currentEdge != car.getCurrentEdge().getId()) {
-				connected = disconnectFromServer();
-				connected = connectToServer(hosts); //hier muss spÃ¤ter der entsprechende Server Ã¼bergeben werden
-			}
 			try {
+			if (stop) {
+				if (isConnected()) {
+					closeConnection();
+				}
+				return;
+			} 
+			int attempt = 0;
+			Exception exception = null;
+			while (attempt < 3 && !isConnected()) {
+				try {
+					openConnection(this.host, port);
+				}
+				catch(Exception e) {
+					exception = e;
+				}
+				attempt++;
+			}
+			if (isConnected()) {
 				this.sendData(getCarString());
-				Thread.sleep(500);
+			} else {
+				exception.printStackTrace();
+				continue;
+			}
+			Thread.sleep(500);
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -59,41 +72,30 @@ public abstract class Transmitter extends Thread {
 		}
 	}
 	
+		
+	
+
+	protected abstract void openConnection(String host, int port) throws Exception;
+
+	protected abstract  void closeConnection() ;
+	
+	protected abstract boolean isConnected();
+	
 	/**
-	 * Connect to host
+	 * Sends the collected car information to the monitoring servers.
+	 * 
+	 * @throws Exception
 	 */
-        private boolean connectToServer(String host) {
-            	try {
-                	socket = new Socket(host, port);
-                	toServer = new DataOutputStream(socket.getOutputStream());
-                	currentEdge = car.getCurrentEdge().getId();
-                	return true;
-            	}
-            	catch(Exception e) {
-                	e.printStackTrace();
-                	return false;
-            	}            
-        }
-        
-	/**
-	 * Disconnect from host
-	 */	
-	private boolean disconnectFromServer() {
-        	try {
-                	socket.close();
-                	toServer.close();
-                	return true;
-            	}
-    		catch(IOException e) {
-                	return false;
-            	}
-        }
+	protected abstract void sendData(String payLoad) throws Exception;
+	
+
+	
+	
 	
 	/**
 	 * Is called to stop this thread
 	 */
 	synchronized public void stopTransmitter() {
-		disconnectFromServer();
 		this.stop = true;
 	}
 
@@ -112,15 +114,9 @@ public abstract class Transmitter extends Thread {
 		b.append(";");
 		b.append(car.getCurrentEdge().getId());
 		b.append(";");
+		b.append("\n");
 		return b.toString();
 	}
 
-	/**
-	 * Sends the collected car information to the monitoring servers.
-	 * 
-	 * @throws Exception
-	 */
-	protected abstract void sendData(String payLoad) throws Exception;
-	
 
 }

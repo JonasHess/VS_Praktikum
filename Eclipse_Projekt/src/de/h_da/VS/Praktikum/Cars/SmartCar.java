@@ -30,19 +30,30 @@ public class SmartCar extends Car {
 
 	public void startCar() {
 		this.currentEdge = this.findNextDestination(startNode, destination);
-		this.transmitter = new TCP_Transmitter(this);
-		transmitter.start();
+		this.onRoadChange(currentEdge);
 	}
+	
+	private Transmitter getNewTransmitter() {
+		return new TCP_Transmitter(this, "localhost", 8888);
+	}
+	
+	private void stopTransmitter() {
+		if (this.transmitter != null) {
+			this.transmitter.stopTransmitter();
+			this.transmitter = null;
+		}
+	}
+	
 	/**
 	 * Is called when car arrives at destination
 	 */
 	@Override
 	public synchronized void delete() {
-		this.transmitter.stopTransmitter();
+		this.stopTransmitter();
 		super.delete();
 	}
 
-	public Node minVertex(Map<Node, Float> dist, Map<Node, Boolean> visited) {
+	private Node minVertex(Map<Node, Float> dist, Map<Node, Boolean> visited) {
 		float x = Float.MAX_VALUE;
 		Node bestNode = null;
 		for (Map.Entry<Node, Float> d : dist.entrySet()) {
@@ -50,11 +61,10 @@ public class SmartCar extends Car {
 				bestNode = d.getKey();
 			}
 		}
-
 		return bestNode;
 	}
 
-	public Map<Node, List<Node>> dijkstra(List<Node> graph, Node myNode) {
+	private Map<Node, List<Node>> dijkstra(List<Node> graph, Node myNode) {
 		final Map<Node, Float> dist = new HashMap<>();
 		final Map<Node, List<Node>> pred = new HashMap<>();
 		final Map<Node, Boolean> visited = new HashMap<>();
@@ -89,7 +99,7 @@ public class SmartCar extends Car {
 		return pred;
 	}
 	
-	public Node findSameNeighbor(Node A, Node B) {
+	private Node findSameNeighbor(Node A, Node B) {
 		List<Node> first = A.getNeighboursNodes();
 		
 		for (Node n : first) {
@@ -103,7 +113,7 @@ public class SmartCar extends Car {
 		return null;
 	}
 	
-	public Node nextNode(Map<Node, List<Node>> pred, Node myNode, Node goal) {
+	private Node nextNode(Map<Node, List<Node>> pred, Node myNode, Node goal) {
 		final List<Node> path = new ArrayList<>();
 		Node x = goal;
 		while(x.getId() != myNode.getId()) {
@@ -125,11 +135,16 @@ public class SmartCar extends Car {
 		if (currentNode.getNeighboursNodes().size() == 1) {
 			return currentNode.getEdges().get(0);
 		}
-		
-		
 		Map<Node, List<Node>> result = dijkstra(graph, currentNode);
 		
 		return currentNode.getEdgeConnectedToNode(nextNode(result, currentNode, destinationNode));
+	}
+
+	@Override
+	protected void onRoadChange(Edge newRoad) {
+		stopTransmitter();
+		this.transmitter = getNewTransmitter();
+		this.transmitter.start();
 	}
 
 }

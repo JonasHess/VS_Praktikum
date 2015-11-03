@@ -14,7 +14,7 @@ import de.h_da.VS.Praktikum.Exceptions.EndOfRoadException;
 import de.h_da.VS.Praktikum.Graph.Edge;
 import de.h_da.VS.Praktikum.Graph.Node;
 
-public class Car {
+public abstract class Car {
 
 	private static int nextId = 1;
 	
@@ -55,8 +55,9 @@ public class Car {
 		
 		this.trafficJamHistoryList = new LinkedList<Boolean>();
 		this.averageSpeedList = new LinkedList<Float>();
-		
 	}
+	
+	protected abstract void onRoadChange(Edge newRoad);
 	
 	public void startCar() {
 		this.currentEdge = this.findNextDestination(startNode, destination);
@@ -213,6 +214,7 @@ public class Car {
 				throw new EndOfRoadException();
 			}
 			this.setNextDestination(nextDestination);
+			onRoadChange(nextDestination);
 		}
 		Vector2f direction = this.currentEdge.getDestinationNode().getPosition().sub(this.lastKnownPosition);
 		direction.normalise();
