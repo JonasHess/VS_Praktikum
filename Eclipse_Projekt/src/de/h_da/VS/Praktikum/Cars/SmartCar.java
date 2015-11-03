@@ -25,11 +25,14 @@ public class SmartCar extends Car {
 	 * @param maxSpeed
 	 */
 	public SmartCar(Node startNode, Node destination, float maxSpeed, List<Node> nodesList) {
-		super(startNode, destination, maxSpeed, nodesList);
-		this.transmitter = new TCP_Transmitter(this);
-		//transmitter.start();
+		super(startNode, destination, maxSpeed, nodesList);		
 	}
 
+	public void startCar() {
+		this.currentEdge = this.findNextDestination(startNode, destination);
+		this.transmitter = new TCP_Transmitter(this);
+		transmitter.start();
+	}
 	/**
 	 * Is called when car arrives at destination
 	 */
