@@ -35,7 +35,7 @@ public class Car extends Thread {
             while(connected) {
                 line = fromClient.readLine(); // Read Request
                 System.out.println("Received: "+ line);
-                if(line.equals("bye")) {
+                if(line == null || line.equals("bye")) {
                     connected = false;
                 }
                 else {
