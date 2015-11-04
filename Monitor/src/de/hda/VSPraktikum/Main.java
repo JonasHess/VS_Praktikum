@@ -1,5 +1,7 @@
 package de.hda.VSPraktikum;
 
+import de.hda.VSPraktikum.ConnectionHandlers.ConnectionHandler;
+import de.hda.VSPraktikum.ConnectionHandlers.TCP_ConnectionHandler;
 
 public class Main {
 	
@@ -9,7 +11,7 @@ public class Main {
     		port = Integer.valueOf(args[0]);
     	}
     	Monitor m = new Monitor("AZ");
-    	SocketServer server = new SocketServer(port, m);
+    	ConnectionHandler server = new TCP_ConnectionHandler(port, m);
     	server.start();
     	while (true) {
     		m.printStatus();

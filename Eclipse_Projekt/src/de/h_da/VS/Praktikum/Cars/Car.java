@@ -9,6 +9,7 @@ import org.newdawn.slick.geom.Vector2f;
 
 import com.sun.swing.internal.plaf.synth.resources.synth;
 
+import de.h_da.VS.Praktikum.Main;
 import de.h_da.VS.Praktikum.TrafficSimulator;
 import de.h_da.VS.Praktikum.Exceptions.EndOfRoadException;
 import de.h_da.VS.Praktikum.Graph.Edge;
@@ -17,8 +18,8 @@ import de.h_da.VS.Praktikum.Graph.Node;
 public abstract class Car {
 
 	private static int nextId = 1;
-	
-	
+	public static final float height = Main.windowsHeight * 0.01f;
+	public static final float width = Main.windowsWidth * 0.01f;
 	private int id;
 	protected Node destination;
 	private Vector2f lastKnownPosition;
@@ -136,7 +137,7 @@ public abstract class Car {
 	 * Adds a measurement, needed to calculate the average speed. 
 	 * @param currentSpeed
 	 */
-	private void addNewAverageSpeed(float currentSpeed) {
+	private synchronized void addNewAverageSpeed(float currentSpeed) {
 		if (averageSpeedList.size() >= 70) {
 			this.averageSpeedList.remove(0);
 		}
@@ -147,7 +148,7 @@ public abstract class Car {
 	 * Is called when a collision with a different car was detected 
 	 * @param trafficJam
 	 */
-	public void setIsInTrafficJam(boolean trafficJam) {
+	synchronized public void setIsInTrafficJam(boolean trafficJam) {
 		this.isInTrafficJam = trafficJam;
 		if (trafficJamHistoryList.size() >= 70) {
 			this.trafficJamHistoryList.remove(0);
@@ -238,7 +239,7 @@ public abstract class Car {
 	}
 
 	public Shape getShape() {
-		Shape shape = new Rectangle(0, 0, 70, 40);
+		Shape shape = new Rectangle(0, 0, Car.width, Car.height);
 		shape.setLocation(lastKnownPosition);
 		return shape;
 	}

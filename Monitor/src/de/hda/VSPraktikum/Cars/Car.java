@@ -1,4 +1,4 @@
-package de.hda.VSPraktikum;
+package de.hda.VSPraktikum.Cars;
 
 
 import java.io.BufferedReader;
@@ -8,7 +8,9 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class Car extends Thread {
+import de.hda.VSPraktikum.Monitor;
+
+public abstract class Car extends Thread {
     
 	private Monitor monitor;
 	
@@ -17,51 +19,55 @@ public class Car extends Thread {
     private float averageSpeed;
     private String currentEdge; 
     
-    private final Socket client;
-    private BufferedReader fromClient;
+  
     
-    public Car(Socket client, Monitor monitor) {
-        this.client = client;
+    public Car(Monitor monitor) {
         this.monitor = monitor;
     }
     
+    protected abstract void initializeConnection () throws Exception;
+    
+    protected abstract boolean isConnected();
+    
+    protected abstract String readNextLine() throws Exception;
     @Override
     public void run() {
         try {
-            fromClient = new BufferedReader(new InputStreamReader(client.getInputStream())); // Datastream FROM Client
+            this.initializeConnection();
             String line;
-            while(this.client.isConnected()) {
-            	line = fromClient.readLine(); // Read Request
+            while(this.isConnected()) {
+            	line =  this.readNextLine();
                 if(line == null || line.length() == 0 || line.equals("bye")) {
                     break;
                 }
-               // System.out.println("Received: "+ line);
-              
-                String[] fragments = line.split(";");
-                
+                // System.out.println("Received: "+ line);
                 try {
-	                id = Integer.parseInt(fragments[0]);
-	                averageSpeed = Float.parseFloat(fragments[1]);
-	                isInTrafficJam = Boolean.parseBoolean(fragments[2]);
-	                currentEdge = fragments[3];
-	                this.monitor.addCar(this);
-	                
+                	parseLine(line);
+                	this.monitor.addCar(this);
                 } catch (Exception e) {
                 	System.out.println(e);
-                	this.monitor.removeCar(this);
                 	continue;
                 }
             }
-            this.monitor.removeCar(this);
         }
         catch(Exception e) {
             System.out.println(e);
             e.printStackTrace();
-            this.monitor.removeCar(this);
+        } finally {
+        	this.monitor.removeCar(this);
         }
     }
     
-   
+   private void parseLine (String line) throws Exception {
+	   String[] fragments = line.split(";");
+	   
+	   this.id = Integer.parseInt(fragments[0]);
+	   this.averageSpeed = Float.parseFloat(fragments[1]);
+	   this.isInTrafficJam = Boolean.parseBoolean(fragments[2]);
+	   this.currentEdge = fragments[3];
+       
+       
+   }
     
     @Override
 	public String toString() {

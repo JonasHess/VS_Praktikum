@@ -19,10 +19,10 @@ import de.h_da.VS.Praktikum.Graph.Node;
 
 public class TrafficSimulator {
 	List<Car> carList;
-	final int carCount = 2;
+	final int carCount = 400;
 	final float maxSpeed = 10;
 	final float minSpeed = 2f;
-	final float speedMultiplier = 0.04f;
+	final float speedMultiplier = 1f;
 
 	private List<Node> nodesList;
 
@@ -87,7 +87,8 @@ public class TrafficSimulator {
 	 */
 	public void spawnNewCar() {
 		Node start = this.getNode('A');
-		Node end = this.getNode('Z');
+		
+		Node end = this.getNode('F');
 		float speed = getRandomFloat(minSpeed, maxSpeed) * speedMultiplier;
 		Car c = new SmartCar(start, end, speed, this.nodesList);
 		start.addCarToSpawnList(c);
@@ -190,7 +191,7 @@ public class TrafficSimulator {
 	private void spawnWaitingCars() {
 		for (Node n : this.nodesList) {
 			List<Car> waitingCars = n.getCarsReadyToSpawnList();
-			Shape shape = new Rectangle(n.getPosition().x, n.getPosition().y, 70, 40);
+			Shape shape = new Rectangle(n.getPosition().x, n.getPosition().y, Car.width, Car.height);
 			for (int i = waitingCars.size() - 1; i >= 0; i--) {
 				Car waitingCar = waitingCars.get(i);
 				boolean colision = false;

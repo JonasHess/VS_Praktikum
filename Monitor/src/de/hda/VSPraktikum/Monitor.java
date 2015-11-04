@@ -3,6 +3,8 @@ package de.hda.VSPraktikum;
 import java.util.LinkedList;
 import java.util.List;
 
+import de.hda.VSPraktikum.Cars.Car;
+
 public class Monitor {
 	private List<Car> connectedCars;
 	private String id;
