@@ -86,9 +86,12 @@ public class TrafficSimulator {
 	 * spawns a new car
 	 */
 	public void spawnNewCar() {
-		Node start = this.getNode('A');
+		Node start = this.nodesList.get(this.getRandomInteger(0, this.nodesList.size() -1));
 		
-		Node end = this.getNode('F');
+		Node end = null;
+		while (end == null || end == start) {
+			end = this.nodesList.get(this.getRandomInteger(0, this.nodesList.size() -1));
+		}
 		float speed = getRandomFloat(minSpeed, maxSpeed) * speedMultiplier;
 		Car c = new SmartCar(start, end, speed, this.nodesList);
 		start.addCarToSpawnList(c);
