@@ -34,7 +34,7 @@ public class SmartCar extends Car {
 	}
 	
 	private Transmitter getNewTransmitter() {
-		return new TCP_Transmitter(this, "localhost", 8888);
+		return new TCP_Transmitter(this, "141.100.42.138", 8888);
 	}
 	
 	private void stopTransmitter() {
@@ -65,9 +65,9 @@ public class SmartCar extends Car {
 	}
 
 	private Map<Node, List<Node>> dijkstra(List<Node> graph, Node myNode) {
-		final Map<Node, Float> dist = new HashMap<>();
-		final Map<Node, List<Node>> pred = new HashMap<>();
-		final Map<Node, Boolean> visited = new HashMap<>();
+		final Map<Node, Float> dist = new HashMap<Node, Float>();
+		final Map<Node, List<Node>> pred = new HashMap<Node, List<Node>>();
+		final Map<Node, Boolean> visited = new HashMap<Node, Boolean>();
 
 		for (Node n : graph) {
 			if (n.getId() == myNode.getId()) {
@@ -114,7 +114,7 @@ public class SmartCar extends Car {
 	}
 	
 	private Node nextNode(Map<Node, List<Node>> pred, Node myNode, Node goal) {
-		final List<Node> path = new ArrayList<>();
+		final List<Node> path = new ArrayList<Node>();
 		Node x = goal;
 		while(x.getId() != myNode.getId()) {
 			path.add(x);
