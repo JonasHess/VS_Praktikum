@@ -56,6 +56,12 @@ public class Main extends BasicGame
 	public void render(GameContainer gc, Graphics g) throws SlickException
 	{
 		this.trafficSimulator.render(gc, g);
+		try {
+			Thread.sleep(1000); // render just all 1000ms
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**
