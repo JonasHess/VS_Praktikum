@@ -170,8 +170,8 @@ public class TrafficSimulator {
 
 		for (Car auto : this.carList) {
 			Shape s = auto.getShape();
-			s.setCenterX(s.getCenterX() - 20.0f);
-			s.setCenterY(s.getCenterY() - 10.0f);
+			s.setCenterX(s.getCenterX() - Car.width / 2);
+			s.setCenterY(s.getCenterY() - Car.height / 2);
 			if (auto.isInTrafficJam()) {
 				g.setColor(Color.red);
 			} else {
