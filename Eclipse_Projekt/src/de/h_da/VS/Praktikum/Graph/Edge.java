@@ -5,16 +5,41 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Line;
 import org.newdawn.slick.geom.Vector2f;
 
+import de.h_da.VS.Praktikum.SpeedControl;
+
 public class Edge {
 	private Node sourceNode;
 	private Node destinationNode;
 	private float allowedSpeedLimit;
+	
+	SpeedControl control;
+	
+	/**
+	 * Create Speed Control
+	 */
+	private void createSpeedControl() {
+			// calc middle
+			float x1 = getSourceNode().getPosition().getX();
+			float y1 = getSourceNode().getPosition().getY();
+			float x2 = getDestinationNode().getPosition().getX();
+			float y2 = getDestinationNode().getPosition().getY();
+
+			float x = (x1 + x2) / 2;
+			float y = (y1 + y2) / 2;
+			control = new SpeedControl(x,y);
+	}
+	
+	public void update(GameContainer gc) {
+		control.update(gc);
+		allowedSpeedLimit = control.getSpeedLimit();
+	}
 
 	public Edge(Node sourceNode, Node destinationNode, float allowedSpeedLimit) {
 		super();
 		this.sourceNode = sourceNode;
 		this.destinationNode = destinationNode;
 		this.allowedSpeedLimit = allowedSpeedLimit;
+		createSpeedControl();
 	}
 
 	/**
@@ -24,6 +49,7 @@ public class Edge {
 	 */
 	public void render(GameContainer gc, Graphics g) {
 		g.draw(new Line(this.sourceNode.getPosition(), this.destinationNode.getPosition()));
+		control.render(gc, g);
 	}
 
 	/**

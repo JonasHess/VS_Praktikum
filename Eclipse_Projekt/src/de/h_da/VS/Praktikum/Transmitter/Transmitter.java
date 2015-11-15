@@ -67,7 +67,7 @@ public abstract class Transmitter extends Thread {
 			Thread.sleep(500);
 
 			} catch (Exception e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 	}

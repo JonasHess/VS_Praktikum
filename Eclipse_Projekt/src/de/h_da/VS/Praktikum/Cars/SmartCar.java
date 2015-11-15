@@ -143,8 +143,8 @@ public class SmartCar extends Car {
 	@Override
 	protected void onRoadChange(Edge newRoad) {
 		stopTransmitter();
-		this.transmitter = getNewTransmitter();
-		this.transmitter.start();
+		//this.transmitter = getNewTransmitter();
+		//this.transmitter.start();
 	}
 
 }

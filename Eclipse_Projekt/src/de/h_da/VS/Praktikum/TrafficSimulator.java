@@ -20,11 +20,12 @@ import de.h_da.VS.Praktikum.Graph.Node;
 public class TrafficSimulator {
 	List<Car> carList;
 	final int carCount = 400;
-	final float maxSpeed = 10;
-	final float minSpeed = 2f;
+	public static final float maxSpeed = 10f;
+	public static final float minSpeed = 2f;
 	final float speedMultiplier = 1f;
 
 	private List<Node> nodesList;
+	private List<Edge> edgesList;
 
 	/**
 	 * Constructor
@@ -33,12 +34,14 @@ public class TrafficSimulator {
 		this.carList = new ArrayList<Car>();
 
 		nodesList = new ArrayList<Node>();
+		edgesList = new ArrayList<Edge>();
 		this.createStreets();
 
 		for (int i = 0; i < carCount; i++) {
 			this.spawnNewCar();
 		}
 	}
+
 
 	/**
 	 * Initializes the graph
@@ -86,11 +89,11 @@ public class TrafficSimulator {
 	 * spawns a new car
 	 */
 	public void spawnNewCar() {
-		Node start = this.nodesList.get(this.getRandomInteger(0, this.nodesList.size() -1));
-		
+		Node start = this.nodesList.get(this.getRandomInteger(0, this.nodesList.size() - 1));
+
 		Node end = null;
 		while (end == null || end == start) {
-			end = this.nodesList.get(this.getRandomInteger(0, this.nodesList.size() -1));
+			end = this.nodesList.get(this.getRandomInteger(0, this.nodesList.size() - 1));
 		}
 		float speed = getRandomFloat(minSpeed, maxSpeed) * speedMultiplier;
 		Car c = new SmartCar(start, end, speed, this.nodesList);
@@ -100,9 +103,9 @@ public class TrafficSimulator {
 	/**
 	 * Step in the game logic
 	 */
-	public void tick() {
+	public void tick(GameContainer gc) {
 		colisionDetection();
-	
+
 		for (int i = this.carList.size() - 1; i >= 0; i--) {
 			Car auto = this.carList.get(i);
 			try {
@@ -114,6 +117,10 @@ public class TrafficSimulator {
 			}
 		}
 		spawnWaitingCars();
+		
+		for (Edge e : edgesList) {
+			e.update(gc);
+		}
 	}
 
 	/**
@@ -139,6 +146,8 @@ public class TrafficSimulator {
 		Node n1 = getNode(id1);
 		Node n2 = getNode(id2);
 		n1.connectToNode(n2, maxSpeed, false);
+		Edge e = n1.getEdgeConnectedToNode(n2);
+		edgesList.add(e);
 	}
 
 	/**
@@ -237,8 +246,6 @@ public class TrafficSimulator {
 		Random rand = new Random();
 		return rand.nextInt((max - min) + 1) + min;
 	}
-
-	
 
 	/**
 	 * Checks for any colliding cars. Collision == TrafficJam

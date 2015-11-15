@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
+import org.newdawn.slick.Game;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -57,7 +58,7 @@ public class Main extends BasicGame
 	{
 		this.trafficSimulator.render(gc, g);
 		try {
-			Thread.sleep(1000); // render just all 1000ms
+			Thread.sleep(0); // render just all 1000ms
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -69,7 +70,7 @@ public class Main extends BasicGame
 	 */
 	@Override
 	public void update(GameContainer gc, int i) throws SlickException {
-		this.trafficSimulator.tick();
+		this.trafficSimulator.tick(gc);
 	}
 
 
