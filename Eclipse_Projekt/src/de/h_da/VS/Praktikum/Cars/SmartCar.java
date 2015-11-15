@@ -85,7 +85,9 @@ public class SmartCar extends Car {
 			final Node next = minVertex(dist, visited);
 			visited.put(next, true);
 			
-			
+			if (next == null) {
+				return null;
+			}
 			final List<Node> neighbors = next.getNeighboursNodes();
 			for (Node v : neighbors) {
 				final float d = dist.get(next) + next.getEdgeConnectedToNode(v).getCost();
@@ -136,7 +138,9 @@ public class SmartCar extends Car {
 			return currentNode.getEdges().get(0);
 		}
 		Map<Node, List<Node>> result = dijkstra(graph, currentNode);
-		
+		if (result == null) { // Kein Weg gefunden, da speed = 0
+			return currentNode.getRandomEdge();
+		}
 		return currentNode.getEdgeConnectedToNode(nextNode(result, currentNode, destinationNode));
 	}
 

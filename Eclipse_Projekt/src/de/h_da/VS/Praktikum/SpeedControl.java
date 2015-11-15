@@ -57,7 +57,7 @@ public class SpeedControl extends Label {
 			if (speed < maxSpeed) {
 				speed++;
 			} else {
-				speed = minSpeed;
+				speed = 0f;
 			}
 		}
 		

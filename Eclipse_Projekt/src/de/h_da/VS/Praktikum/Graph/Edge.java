@@ -89,8 +89,8 @@ public class Edge {
 	 * @return
 	 */
 	public float getAllowedSpeedLimit() {
-		if (this.allowedSpeedLimit <= 0) {
-			throw new RuntimeException("allowedSpeed can not be <= 0");
+		if (this.allowedSpeedLimit < 0) {
+			throw new RuntimeException("allowedSpeed can not be < 0");
 		}
 		return allowedSpeedLimit;
 	}
@@ -100,8 +100,8 @@ public class Edge {
 	 * @param allowedSpeedLimit
 	 */
 	public void setAllowedSpeedLimit(float allowedSpeedLimit) {
-		if (allowedSpeedLimit <= 0) {
-			throw new RuntimeException("allowedSpeed can not be <= 0");
+		if (allowedSpeedLimit < 0) {
+			throw new RuntimeException("allowedSpeed can not be < 0");
 		}
 		this.allowedSpeedLimit = allowedSpeedLimit;
 	}
