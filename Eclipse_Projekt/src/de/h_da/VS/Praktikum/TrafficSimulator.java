@@ -21,7 +21,7 @@ public class TrafficSimulator {
 	List<Car> carList;
 	final int carCount = 400;
 	public static final float maxSpeed = 10f;
-	public static final float minSpeed = 2f;
+	public static final float minSpeed = 3f;
 	final float speedMultiplier = 1f;
 
 	private List<Node> nodesList;

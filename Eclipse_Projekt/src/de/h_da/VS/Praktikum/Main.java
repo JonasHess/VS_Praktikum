@@ -68,9 +68,14 @@ public class Main extends BasicGame
 	/**
 	 * Calls a tick in the game logic
 	 */
+	int time = 0;
 	@Override
-	public void update(GameContainer gc, int i) throws SlickException {
-		this.trafficSimulator.tick(gc);
+	public void update(GameContainer gc, int delta) throws SlickException {
+		time += delta;
+		if (time >= 100) { // 1000 == 1sec hier zeitraffer einbauen
+			this.trafficSimulator.tick(gc);
+			time = 0;
+		}
 	}
 
 
