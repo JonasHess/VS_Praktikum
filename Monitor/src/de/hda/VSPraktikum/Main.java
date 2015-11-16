@@ -2,6 +2,7 @@ package de.hda.VSPraktikum;
 
 import de.hda.VSPraktikum.ConnectionHandlers.ConnectionHandler;
 import de.hda.VSPraktikum.ConnectionHandlers.TCP_ConnectionHandler;
+import de.hda.VSPraktikum.ConnectionHandlers.UDP_ConnectionHandler;
 
 public class Main {
 	
@@ -11,7 +12,8 @@ public class Main {
     		port = Integer.valueOf(args[0]);
     	}
     	Monitor m = new Monitor("AZ");
-    	ConnectionHandler server = new TCP_ConnectionHandler(port, m);
+    	//ConnectionHandler server = new TCP_ConnectionHandler(port, m);
+        ConnectionHandler server = new UDP_ConnectionHandler(port, m);
     	server.start();
     	while (true) {
     		m.printStatus();
