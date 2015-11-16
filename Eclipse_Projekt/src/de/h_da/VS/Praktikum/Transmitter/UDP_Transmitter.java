@@ -1,35 +1,49 @@
 package de.h_da.VS.Praktikum.Transmitter;
 
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+
 import de.h_da.VS.Praktikum.Cars.Car;
 
 public class UDP_Transmitter extends Transmitter{
 
+	private DatagramSocket socket;
+	private InetAddress address;
+	private DatagramPacket packet;
+	
 	public UDP_Transmitter(Car car, String host, int port) {
 		super(car, host, port);
 	}
 
 	@Override
-	protected void openConnection(String host, int port) throws Exception {
-		// TODO Auto-generated method stub
-		
+	protected void openConnection() throws Exception {
+		socket = new DatagramSocket();	
+		address = InetAddress.getByName(host);
 	}
 
 	@Override
 	protected void closeConnection() {
-		// TODO Auto-generated method stub
-		
+		if (isConnected()) {
+
+			socket.close();
+		}		
 	}
 
 	@Override
 	protected boolean isConnected() {
-		// TODO Auto-generated method stub
-		return false;
+		return this.socket != null;
 	}
 
 	@Override
 	protected void sendData(String payLoad) throws Exception {
-		// TODO Auto-generated method stub
-		
+		byte[] data = payLoad.getBytes();
+		packet = new DatagramPacket(data, data.length, address, port);
+		try {
+			socket.send(packet);	
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
 	}
-
 }
