@@ -9,7 +9,7 @@ import de.hda.VSPraktikum.Cars.TCP_Car;
 public class TCP_ConnectionHandler extends ConnectionHandler {
 
 	/**
-	 * Construcot
+	 * Constructor
 	 * 
 	 * @param port
 	 * @param monitor
