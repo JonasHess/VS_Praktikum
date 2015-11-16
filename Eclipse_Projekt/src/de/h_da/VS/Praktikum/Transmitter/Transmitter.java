@@ -10,13 +10,9 @@ import de.h_da.VS.Praktikum.Cars.Car;
 public abstract class Transmitter extends Thread {
 	
 	protected Car car;
-	private String host;
-	private int port;
-	
-	
-	
-	private boolean stop = false;
-
+	protected String host;
+	protected int port;
+	protected boolean stop = false;	
 	/**
 	 * Constructor
 	 * 
@@ -30,12 +26,49 @@ public abstract class Transmitter extends Thread {
 		this.stop = false;
 	}
 	
+	protected abstract void openConnection() throws Exception;
+
+	protected abstract  void closeConnection() ;
 	
+	protected abstract boolean isConnected();
+	
+	/**
+	 * Sends the collected car information to the monitoring servers.
+	 * 
+	 * @throws Exception
+	 */
+	protected abstract void sendData(String payLoad) throws Exception;
+	
+	/**
+	 * Return the encodes string of this car.
+	 * 
+	 * @return
+	 */
+	protected String getCarString() {
+		StringBuilder b = new StringBuilder();
+		b.append(car.getId());
+		b.append(";");
+		b.append(car.getAverageSpeed());
+		b.append(";");
+		b.append(car.isInTrafficJam());
+		b.append(";");
+		b.append(car.getCurrentEdge().getId());
+		b.append(";");
+		b.append("\n");
+		return b.toString();
+	}
 
-
+	/**
+	 * Is called to stop this thread
+	 */
+	synchronized public void stopTransmitter() {
+		this.stop = true;
+	}
+	
 	/**
 	 * main method of this thread
 	 */
+	
 	@Override
 	public void run() {
 		super.run();
@@ -51,7 +84,7 @@ public abstract class Transmitter extends Thread {
 			Exception exception = null;
 			while (attempt < 3 && !isConnected()) {
 				try {
-					openConnection(this.host, port);
+					openConnection();
 				}
 				catch(Exception e) {
 					exception = e;
@@ -71,52 +104,4 @@ public abstract class Transmitter extends Thread {
 			}
 		}
 	}
-	
-		
-	
-
-	protected abstract void openConnection(String host, int port) throws Exception;
-
-	protected abstract  void closeConnection() ;
-	
-	protected abstract boolean isConnected();
-	
-	/**
-	 * Sends the collected car information to the monitoring servers.
-	 * 
-	 * @throws Exception
-	 */
-	protected abstract void sendData(String payLoad) throws Exception;
-	
-
-	
-	
-	
-	/**
-	 * Is called to stop this thread
-	 */
-	synchronized public void stopTransmitter() {
-		this.stop = true;
-	}
-
-	/**
-	 * Return the encodes string of this car.
-	 * 
-	 * @return
-	 */
-	private String getCarString() {
-		StringBuilder b = new StringBuilder();
-		b.append(car.getId());
-		b.append(";");
-		b.append(car.getAverageSpeed());
-		b.append(";");
-		b.append(car.isInTrafficJam());
-		b.append(";");
-		b.append(car.getCurrentEdge().getId());
-		b.append(";");
-		b.append("\n");
-		return b.toString();
-	}
-
-
 }
