@@ -10,6 +10,7 @@ import de.h_da.VS.Praktikum.Graph.Edge;
 import de.h_da.VS.Praktikum.Graph.Node;
 import de.h_da.VS.Praktikum.Transmitter.TCP_Transmitter;
 import de.h_da.VS.Praktikum.Transmitter.Transmitter;
+import de.h_da.VS.Praktikum.Transmitter.UDP_Transmitter;
 
 public class SmartCar extends Car {
 
@@ -17,7 +18,7 @@ public class SmartCar extends Car {
 	private List<Node> nodesList;
 
 	/**
-	 * Construcor
+	 * Constructor
 	 * 
 	 * @param currentEdge
 	 * @param spawnPoint
@@ -34,7 +35,8 @@ public class SmartCar extends Car {
 	}
 	
 	private Transmitter getNewTransmitter() {
-		return new TCP_Transmitter(this, "141.100.42.138", 8888);
+		//return new TCP_Transmitter(this, "localhost", 8888);
+		return new UDP_Transmitter(this, "localhost", 8888);
 	}
 	
 	private void stopTransmitter() {
@@ -147,8 +149,8 @@ public class SmartCar extends Car {
 	@Override
 	protected void onRoadChange(Edge newRoad) {
 		stopTransmitter();
-		//this.transmitter = getNewTransmitter();
-		//this.transmitter.start();
+		this.transmitter = getNewTransmitter();
+		this.transmitter.start();
 	}
 
 }
