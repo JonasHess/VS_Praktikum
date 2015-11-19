@@ -54,7 +54,7 @@ public class Monitor {
             //Kick old cars out
             for(Iterator<Car> c = connectedCars.iterator(); c.hasNext(); ) {
                 Car car = c.next();
-                if(System.currentTimeMillis()-car.getLastTimeStamp() > 2000) {
+                if(System.currentTimeMillis()-car.getLastTimeStamp() > 300) {
                     c.remove();
                 }                    
             }
