@@ -12,8 +12,15 @@ public class Main {
     		port = Integer.valueOf(args[0]);
     	}
     	Monitor m = new Monitor("AZ");
-    	//ConnectionHandler server = new TCP_ConnectionHandler(port, m);
-        ConnectionHandler server = new UDP_ConnectionHandler(port, m);
+        final boolean tcp = false;
+        ConnectionHandler server;
+        if (tcp) {
+            server = new TCP_ConnectionHandler(port, m);
+
+        } else {
+            server = new UDP_ConnectionHandler(port, m);
+
+        }
     	server.start();
     	while (true) {
     		m.printStatus();
