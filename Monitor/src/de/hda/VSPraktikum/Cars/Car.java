@@ -25,7 +25,7 @@ public abstract class Car extends Thread {
     public Car(Monitor monitor) {
         this.monitor = monitor;
     }
-
+    
     protected void parseLine(String line) throws Exception {
         String[] fragments = line.split(";");
         
@@ -49,6 +49,9 @@ public abstract class Car extends Thread {
     	if (id != otherCar.getCarId()) {
     		return false;
     	}
+        if(!currentEdge.equals(otherCar.getCurrentEdge())) {
+            return false;
+        }
         return true;
     }
     
