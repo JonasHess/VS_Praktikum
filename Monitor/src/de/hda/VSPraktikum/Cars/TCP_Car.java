@@ -8,7 +8,7 @@ import de.hda.VSPraktikum.Monitor;
 
 public class TCP_Car extends Car {
 
-    private final Socket socket;
+    private Socket socket;
     private BufferedReader fromClient;
 
     public TCP_Car(Socket client, Monitor monitor) {
@@ -43,10 +43,23 @@ public class TCP_Car extends Car {
             System.out.println(e);
             e.printStackTrace();
         } finally {
+                this.close();
         	this.monitor.removeCar(this);
         }
     }        
 
+    public void close() {
+        try{
+            this.socket.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            this.socket = null;
+        }
+        
+    }
+    
     protected void initializeConnection() throws Exception {
             fromClient = new BufferedReader(new InputStreamReader(this.socket.getInputStream())); // Datastream
     }
@@ -56,7 +69,11 @@ public class TCP_Car extends Car {
     }
 
     protected String readNextLine() throws Exception {
-            return fromClient.readLine();
+            try {
+                 return fromClient.readLine();
+            } catch (Exception e) {
+                return "";
+            }
     }
 
 }
