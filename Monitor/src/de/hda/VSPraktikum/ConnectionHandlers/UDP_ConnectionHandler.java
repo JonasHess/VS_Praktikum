@@ -28,7 +28,7 @@ public class UDP_ConnectionHandler extends ConnectionHandler{
             while(true) {
                 packet = new DatagramPacket(new byte[len], len);
                 listenSocket.receive(packet);
-                new UDP_Car(packet, monitor);
+                new UDP_Car(packet, monitor).start();
             }
         }
         catch(Exception e) {
